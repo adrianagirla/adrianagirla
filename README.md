@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @adrianagirla
-- 👀 I’m interested in IT & Medicine
-- 🌱 I’m currently learning Django, Rest-Framewoek
+- 👀 Medicine & It lover <3
+- 🌱 Started from Python, ended with Angular:)
 
 
 <!---
