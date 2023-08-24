@@ -1,0 +1,273 @@
+openapi: 3.0.3
+info:
+  title: CloudBill Metric Fetcher
+  description: |-
+    This is documentation for getting a client data ussage from Openstack environment 
+  contact:
+    email: crislucan@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: http://cb.virtomat.io/openstack
+tags:
+  - name: usage
+    description: Everything about your usage
+  - name: project
+    description: Access to projects details
+  - name: user
+    description: Acces to users
+    
+paths:
+  /usage/user/{userName}/year/{year}/month/{month}:
+    get:
+      tags:
+        - usage
+      summary: Get data usage for spcific user in a specific month
+      description: Update an existing pet by Id
+      parameters:
+        - name: userName
+          in: path
+          description: user name
+          required: true
+          schema:
+            type: string
+        - name: year
+          in: path
+          description: current year 
+          required: true
+          schema:
+            type: integer
+            format: int64  
+        - name: month
+          in: path
+          description: month for billing
+          required: true
+          schema:
+            type: integer
+            format: int64  
+
+      responses:
+        '200':
+          description:  Succes.Ussage found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                   status:
+                    type: string
+                    example: Status 200 Ok
+                   message:
+                    type: string
+                    example: Usage found
+                   dataUsage:
+                      type: object
+                      properties:
+                        tenant_usage:
+                          type: object
+                          $ref: '#/components/schemas/Usage'
+                   month :
+                    type: integer
+                    format: int64
+                    example: 08
+        
+        '404':
+          description: User not found
+        
+     
+   
+
+  /users:
+    get:
+      tags:
+        - user
+      summary: Get all users
+      description: ''
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                   status:
+                    type: string
+                    example: 200 OK Succes
+                   message:
+                    type: string
+                    example: Users Found
+                   users:
+                    type: array
+                    items: 
+                      format: string
+        
+              
+  
+  /projects:
+    get:
+      tags:
+        - project
+      summary: Get all existing projects in openstack environment
+      description: ''
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                   status:
+                    type: string
+                    example: 200 ok Succes
+                   message:
+                    type: string
+                    example: Projects found
+                   projects:
+                    type: array
+                    items: 
+                      format: string
+                      
+  /projectid/{userName}:
+    get:
+      tags:
+        - project
+      summary: Get project id of specific user
+      description: ''
+      parameters:
+        - name: userName 
+          in: path
+          description: user name
+          required: true
+          schema:
+            type: string
+  
+      responses:
+        '200':
+          description:  Project Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                   status:
+                    type: string
+                    example: 200 ok succes
+                   message:
+                    type: string
+                    example: Project Found
+                   projectid:
+                    type: object
+                    $ref: '#/components/schemas/User'
+        '404':
+          description:  Project not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                   status:
+                    type: string
+                    example: 404 Not Found
+                   message:
+                    type: string
+                    example: project not found
+                   projectid:
+                    type: string
+                    example: User Not existent
+                     
+      
+        
+        
+  
+  
+components:
+  schemas:
+    Usage:
+      type: object
+      properties:
+        tenant_id:
+          type: string
+          example:  c705f89fd12b42d09fe3b121184c4370 
+        server_usages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Instance'
+        total_local_gb_usage:
+          type: integer
+          example: 496129.809172694 
+        total_vcpus_usage:
+          type: integer
+          example: 50772.61248874721 
+        total_memory_mb_usage:
+          type: integer
+          example: 103982310.37695429 
+        total_hours:
+          type: integer
+          example: 6763.386720318055 
+        start: 
+          type: string
+          example: 2023-08-01T00:00:00.000000
+        stop:
+          type: string
+          example: 023-08-24T11:09:09.707165 
+        
+        
+    Instance:
+      type: object
+      properties:
+        hours:
+          type: integer
+          format: int64
+          example: 563.1526964347222
+        flavor:
+          type: string
+          example:  rke2.small
+        instance_id:
+          type: string
+          example:  76b101d-a2ed-4a81-ba52-6c74fa7ddc2f
+        name:
+          type: string
+          example: synergetics-dev-jx-masters-c88450c2-7fsrq
+        tenant_id:
+          type: string
+          example:  c705f89fd12b42d09fe3b121184c4370
+        memory_mb:
+          type: integer
+          example: 4096
+        local_gb:
+          type: integer
+          example: 60
+        vcpus:
+          type: integer
+          example: 2
+        started_at:
+          type: string
+          example:  2023-05-26T10:06:04.000000
+        ended_at:
+          type: string
+          example:  2023-06-26T10:06:04.000000
+        state:
+          type: string
+          example: active
+        uptime:
+          type: integer
+          example: 7779785
+        
+    User:
+      type: object
+      properties:
+        user:
+          type: string
+          example: hiperfy
+        id:
+          type: string
+          example:  79b87daa1045476995519da674c1beb6
+  
+    
+      
+       
+    
